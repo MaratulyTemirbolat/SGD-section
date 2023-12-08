@@ -1,0 +1,914 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Stochastic Gradient Descent (SGD) &#8212; My sample book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'sgd_math';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Calculus" href="math/calculus.html" />
+    <link rel="prev" title="Stochastic Gradient Descent (SGD)" href="sgd.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="My sample book - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="My sample book - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Welcome to your Jupyter Book
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Math for ML</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="euler.html">Число Эйлера</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sgd.html">Stochastic Gradient Descent (SGD)</a></li>
+
+
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Stochastic Gradient Descent (SGD)</a></li>
+
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Math for ML</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="math/calculus.html">Calculus</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="math/calculus/1-d.html">1-d calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math/calculus/multivariate.html">Multivariate calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math/calculus/matrix_diff.html">Matrix calculus</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="math/probability.html">Probability</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="math/statistics.html">Statistics</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="math/stats/MLE.html">Maximum likelihood estimation (MLE)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="math/optimization.html">Optimization</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="math/optimization/GD.html">Gradient descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math/optimization/SGD.html">Stochastic Gradient Descent (SGD)</a></li>
+
+
+<li class="toctree-l2"><a class="reference internal" href="math/optimization/newton.html">Newton’s method</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Fsgd_math.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/sgd_math.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Stochastic Gradient Descent (SGD)</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Stochastic Gradient Descent (SGD)</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-descent-gd-review">Gradient Descent (GD) review</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Stochastic Gradient Descent (SGD)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gd-algorithm-problem">GD algorithm problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sgd-derivation">SGD derivation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sgd-realization-pseudocode">SGD Realization Pseudocode</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#heuristics">Heuristics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#initialization-of-weights-w">Initialization of weights <span class="math notranslate nohighlight">\(w\)</span></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-learning-rate">Dynamic Learning Rate</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sample-object-choice">Sample object choice</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advantages-and-disadvantages">Advantages and Disadvantages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sgd-with-notmnist">SGD with notMNIST</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#visualize-data-results">Visualize data results</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#visualize-performance">Visualize performance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimizers-of-gradient-algorithms">Optimizers of Gradient Algorithms</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#momentum-gradient-descent">Momentum Gradient Descent</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nag-nesterov-s-accelerated-gradient">NAG - Nesterov’s accelerated gradient</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#common-sgd-vs-with-momentum-vs-with-nesterov-momentum">Common SGD VS with Momentum VS with Nesterov Momentum</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="stochastic-gradient-descent-sgd">
+<h1>Stochastic Gradient Descent (SGD)<a class="headerlink" href="#stochastic-gradient-descent-sgd" title="Permalink to this heading">#</a></h1>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/sgd-meme1.png"><img alt="_images/sgd-meme1.png" src="_images/sgd-meme1.png" style="width: 400px;" /></a>
+</figure>
+<!-- <img height="500px" src="./images/sgd-meme.png" alt="sgd meme" class="bg-primary mb-1" style="text-align:right" align="center"> -->
+<p><strong>Stochastic Gradient Descent</strong> is an optimization algorithm that differs from the usual <strong>Gradient Descent</strong> in that the gradient of the function is considered at each step <strong>not as the sum</strong> of gradients from each point, but as the gradient from <strong>one randomly</strong> selected element</p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="gradient-descent-gd-review">
+<h1>Gradient Descent (GD) review<a class="headerlink" href="#gradient-descent-gd-review" title="Permalink to this heading">#</a></h1>
+<p>Before going into the study of stochastic gradient descent, let’s recall the formula of ordinary gradient descent.
+According to the (description)[#], the Gradient Descent is an optimization algorithm for finding a local minimum of a differentiable function.
+We have the following:</p>
+<ul class="simple">
+<li><p>input points <span class="math notranslate nohighlight">\(x \in X (X = R^n) \;\;\;\text{i.e}\;\;\; x = (x_1, ..., x_n)^T\)</span>;</p></li>
+<li><p><span class="math notranslate nohighlight">\(f(x)\)</span> - differentiable multi-variable function</p></li>
+</ul>
+<div class="math notranslate nohighlight" id="equation-gd-math-formula">
+<span class="eqno">(6)<a class="headerlink" href="#equation-gd-math-formula" title="Permalink to this equation">#</a></span>\[x_{k+1} = x{k} - \eta \nabla f(x)\]</div>
+<p>where,  <span class="math notranslate nohighlight">\(\nabla f(x)\)</span> is gradient determined here <a class="reference internal" href="math/calculus/multivariate.html#equation-vector-func-diff">(11)</a> <br>
+<span class="math notranslate nohighlight">\(\;\;\;\;\;\;\;\;\; \eta\)</span> - the learning rate or gradient step (responsible for how much to change in the direction of the gradient)</p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>Stochastic Gradient Descent (SGD)<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
+<section id="gd-algorithm-problem">
+<h2>GD algorithm problem<a class="headerlink" href="#gd-algorithm-problem" title="Permalink to this heading">#</a></h2>
+<p>Considering the previous algorithm <a class="reference internal" href="#equation-gd-math-formula">(6)</a> we come to the <strong>problem</strong>. To determine a new approximation of the vector pointt <span class="math notranslate nohighlight">\(x\)</span>, it is necessary to calculate the sum of the gradients for each point i.e. <span class="math notranslate nohighlight">\( \sum\limits_{i=1}^l \nabla f(x_i)\)</span>
+<strong>HOWEVER</strong> It can significantly slow down the algorithm since it is very resource - intensive. <br></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(l\)</span> - number of finite points (number of iterations)</p></li>
+</ul>
+</section>
+<section id="sgd-derivation">
+<h2>SGD derivation<a class="headerlink" href="#sgd-derivation" title="Permalink to this heading">#</a></h2>
+<p>In order to improve the efficiency of the algorithm we may <strong>replace</strong> standard calculation of the <strong>real gradient</strong> for the whole number of points with the <strong>pseudogradient</strong> for only one point or some sequence of points.</p>
+<p><strong>Pseudogradient</strong> (<span class="math notranslate nohighlight">\(\nabla \widehat f\)</span>) must have the following properties:</p>
+<ul class="simple">
+<li><p>It must form an <strong>acute (sharp) angle</strong> with a <strong>true gradient</strong> in the “n” dimensional space</p></li>
+<li><p>It must be <strong>calculated much simpler</strong> than the true gradient <span class="math notranslate nohighlight">\(\nabla f(x)\)</span> over the points.</p></li>
+</ul>
+<p>Accordingly, at each step, instead of calculating the whole sum of gradients  (<span class="math notranslate nohighlight">\(\sum\limits_{i=1}^l \nabla f(x_i)\)</span>) one observation can be considered (<span class="math notranslate nohighlight">\(\nabla f(x_j)\)</span>), i.e.</p>
+<div class="math notranslate nohighlight" id="equation-sgd-math-formula">
+<span class="eqno">(7)<a class="headerlink" href="#equation-sgd-math-formula" title="Permalink to this equation">#</a></span>\[\mathbb x_{k+1} = \mathbb x_k - \eta  \nabla f(\mathbb x_k)\]</div>
+<p>where, <span class="math notranslate nohighlight">\( 1\leqslant k \leqslant l\)</span> (usually random object from the trainig sample)</p>
+</section>
+<section id="sgd-realization-pseudocode">
+<h2>SGD Realization Pseudocode<a class="headerlink" href="#sgd-realization-pseudocode" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Input: Training sample <span class="math notranslate nohighlight">\(X^{l}\)</span>, convergence step (learning rate) “<strong><span class="math notranslate nohighlight">\(\eta\)</span></strong>”, rate of “forgetting” “<em><span class="math notranslate nohighlight">\(\lambda\)</span></em>”</p></li>
+<li><p>Output: Vector of weight coefficients <span class="math notranslate nohighlight">\(w\)</span></p></li>
+</ul>
+<p>Algorithm:</p>
+<ol class="arabic simple">
+<li><p>Initialization of weights “<span class="math notranslate nohighlight">\(w\)</span>” with some initial values</p></li>
+<li><p>Initial calculation of the cost function: <span class="math notranslate nohighlight">\((\widehat Q (w) = \frac 1l\sum\limits_{i=1}^l L_i(w))\)</span></p></li>
+<li><p>Loop</p></li>
+<li><p>Choose random observation <span class="math notranslate nohighlight">\( x_k \in \mathbb X^{l}\)</span></p></li>
+<li><p>Calculate loss function <span class="math notranslate nohighlight">\(E_k = L_k(w)\)</span></p></li>
+<li><p>Recalculate weight vector: <span class="math notranslate nohighlight">\(w = w - \eta  \nabla L_k(w)\)</span></p></li>
+<li><p>Recalculate cost function:  <span class="math notranslate nohighlight">\(\widehat Q = \lambda E_k + (1-\lambda)\widehat Q\)</span></p></li>
+<li><p>While <span class="math notranslate nohighlight">\(\widehat Q\)</span> and/or <strong><span class="math notranslate nohighlight">\(w\)</span></strong> don’t reach set values</p></li>
+</ol>
+</section>
+<section id="heuristics">
+<h2>Heuristics<a class="headerlink" href="#heuristics" title="Permalink to this heading">#</a></h2>
+<p>According to the <a class="reference external" href="https://en.wikipedia.org/wiki/Heuristic">description</a>,  “<strong>heuristics</strong>” is understood as a set of techniques as well as the methods that facilitate and simplify the solution of corresponded tasks. Here is the list of suggested heuristics during the work with the SGD algorithm:</p>
+<ul class="simple">
+<li><p>Initialization of the weights</p></li>
+<li><p>Choice for learning rate also known as convergence step or gradient step</p></li>
+<li><p>Choice of the object from the training sample</p></li>
+</ul>
+<section id="initialization-of-weights-w">
+<h3>Initialization of weights <span class="math notranslate nohighlight">\(w\)</span><a class="headerlink" href="#initialization-of-weights-w" title="Permalink to this heading">#</a></h3>
+<p>One of the crucial steps during SGD algorithm is initialization of the weights. It is common to set <strong>zero vector</strong> as initial values, but there are also other approaches.</p>
+<ol class="arabic simple">
+<li><p>So, w = 0;</p></li>
+</ol>
+<p>Another way is take <strong>small random weights</strong>, since if initialize large initial weight values it can lead to an area with small modulo derivatives and therefore it will be difficult to get out of such an area.</p>
+<ol class="arabic simple" start="2">
+<li><p>So, <span class="math notranslate nohighlight">\(w_j\)</span> = random(<span class="math notranslate nohighlight">\(-\frac 1{2n}\)</span>, <span class="math notranslate nohighlight">\(\frac 1{2n}\)</span>)</p></li>
+</ol>
+<p>Third case is just to launch SGD several times with <strong>various initial approaches</strong> and select the best solution.</p>
+<ol class="arabic simple" start="3">
+<li><p>So, <span class="math notranslate nohighlight">\(w = {[C_1, C_2, ..., C_n]}^{T}\)</span>, where <span class="math notranslate nohighlight">\(C_1, C_2, C_n\)</span> - are some initial values</p></li>
+</ol>
+</section>
+<section id="dynamic-learning-rate">
+<h3>Dynamic Learning Rate<a class="headerlink" href="#dynamic-learning-rate" title="Permalink to this heading">#</a></h3>
+<p>As an optimization, <strong>learning rate variable <span class="math notranslate nohighlight">\(\eta\)</span></strong> value can be <strong>dynamicly changed</strong> at each step of iteration. Replacing <strong><span class="math notranslate nohighlight">\(\eta\)</span></strong> with a time-dependent learning rate <strong><span class="math notranslate nohighlight">\(\eta(t)\)</span></strong> increase the complexity of controlling convergence of an optimization algorithm. In particular, it is required to figure out how rapidly should decay. There is a list of some commonly used formulas for <strong><span class="math notranslate nohighlight">\(\eta(t)\)</span></strong> calculation.</p>
+<div class="math notranslate nohighlight">
+\[ \eta(t)=\eta_i \;\;\text{ if }\;\; t_i \leqslant t &lt; t_{i+1} \]</div>
+<div class="math notranslate nohighlight">
+\[\eta(t)=\eta_o \cdot e^{-\lambda t}, \;\;\text{exponential decay}\;\;\]</div>
+<div class="math notranslate nohighlight">
+\[\eta(t)=\eta_o \cdot (\beta t + 1)^{-\alpha}, \;\;\text{polynomial decay}\;\;\]</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If <span class="math notranslate nohighlight">\(\eta(t)\)</span> changes <strong>too quick</strong>, then <strong>stop optimizing</strong> prematurely. If we decrease it <strong>too slowly</strong>, we <strong>waste</strong> too much <strong>time</strong> on optimization.</p>
+</div>
+</section>
+<section id="sample-object-choice">
+<h3>Sample object choice<a class="headerlink" href="#sample-object-choice" title="Permalink to this heading">#</a></h3>
+<p>As far as the random object choice is concerned from the training sample, the following heuristics can be used:</p>
+<ul class="simple">
+<li><p>Take objects from different classes;</p></li>
+<li><p>Take objects on which the smaller the margin (more probability to take desired object)</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><span class="math notranslate nohighlight">\(**Margin** (M_i)\)</span> is the distance from the separating surface to i-th object i.e. the margin of the sample <span class="math notranslate nohighlight">\((x_i, y_i) is\)</span>
+$<span class="math notranslate nohighlight">\(M_i = a(x_i) \cdot y_i = &lt;w, x_i&gt; y_i\)</span>$
+if the value is <strong>positive</strong>, then the prediction if <strong>correct</strong>.</p>
+</div>
+</section>
+</section>
+<section id="advantages-and-disadvantages">
+<h2>Advantages and Disadvantages<a class="headerlink" href="#advantages-and-disadvantages" title="Permalink to this heading">#</a></h2>
+</section>
+<section id="sgd-with-notmnist">
+<h2>SGD with notMNIST<a class="headerlink" href="#sgd-with-notmnist" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">SGDClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">ndarray</span>
+<span class="kn">from</span> <span class="nn">notMNIST</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">plot_letters</span><span class="p">,</span>
+    <span class="n">plot_confusion_matrix</span><span class="p">,</span>
+    <span class="n">X_test</span><span class="p">,</span>
+    <span class="n">y_test</span><span class="p">,</span>
+    <span class="n">X_train</span><span class="p">,</span>
+    <span class="n">y_train</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="n">clf</span><span class="p">:</span> <span class="n">SGDClassifier</span> <span class="o">=</span> <span class="n">SGDClassifier</span><span class="p">(</span>
+    <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;l2&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span>
+    <span class="n">learning_rate</span><span class="o">=</span><span class="s2">&quot;optimal&quot;</span><span class="p">,</span>
+    <span class="n">eta0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">max_iter</span><span class="o">=</span><span class="mi">3000</span>
+<span class="p">)</span>
+<span class="n">model</span><span class="p">:</span> <span class="n">SGDClassifier</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_train</span><span class="p">)</span>
+<span class="n">y_train_pred</span><span class="p">:</span> <span class="n">ndarray</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">y_test_pred</span><span class="p">:</span> <span class="n">ndarray</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">train_accuracy</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">y_train_pred</span><span class="p">)</span>
+<span class="n">test_accuracy</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SGD accuracy train: </span><span class="si">{</span><span class="n">train_accuracy</span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SGD accuracy test: </span><span class="si">{</span><span class="n">test_accuracy</span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Downloading data...
+</pre></div>
+</div>
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">4</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">ndarray</span>
+<span class="ne">----&gt; </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">notMNIST</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="g g-Whitespace">      </span><span class="mi">5</span>     <span class="n">plot_letters</span><span class="p">,</span>
+<span class="g g-Whitespace">      </span><span class="mi">6</span>     <span class="n">plot_confusion_matrix</span><span class="p">,</span>
+<span class="g g-Whitespace">      </span><span class="mi">7</span>     <span class="n">X_test</span><span class="p">,</span>
+<span class="g g-Whitespace">      </span><span class="mi">8</span>     <span class="n">y_test</span><span class="p">,</span>
+<span class="g g-Whitespace">      </span><span class="mi">9</span>     <span class="n">X_train</span><span class="p">,</span>
+<span class="g g-Whitespace">     </span><span class="mi">10</span>     <span class="n">y_train</span><span class="p">,</span>
+<span class="g g-Whitespace">     </span><span class="mi">11</span> <span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">14</span> <span class="n">clf</span><span class="p">:</span> <span class="n">SGDClassifier</span> <span class="o">=</span> <span class="n">SGDClassifier</span><span class="p">(</span>
+<span class="g g-Whitespace">     </span><span class="mi">15</span>     <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;l2&quot;</span><span class="p">,</span>
+<span class="g g-Whitespace">     </span><span class="mi">16</span>     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span>
+   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">20</span>     <span class="n">max_iter</span><span class="o">=</span><span class="mi">3000</span>
+<span class="g g-Whitespace">     </span><span class="mi">21</span> <span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">22</span> <span class="n">model</span><span class="p">:</span> <span class="n">SGDClassifier</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_train</span><span class="p">)</span>
+
+<span class="n">File</span> <span class="o">~</span>\<span class="n">Desktop</span>\<span class="n">Desktop</span>\<span class="n">data</span>\<span class="n">Master</span>\<span class="n">KBTU</span>\<span class="n">Machine</span> <span class="n">learning</span>\<span class="n">Project</span> <span class="n">work</span>\<span class="n">SGD</span><span class="o">-</span><span class="n">section</span>\<span class="n">notMNIST</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">92</span>
+<span class="g g-Whitespace">     </span><span class="mi">88</span>     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">89</span>     <span class="k">return</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span>
+<span class="ne">---&gt; </span><span class="mi">92</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">load_notmnist</span><span class="p">(</span><span class="n">letters</span><span class="o">=</span><span class="s1">&#39;ABCDEFGHIJ&#39;</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">93</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">]),</span> <span class="n">X_test</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">])</span>
+
+<span class="nn">File ~\Desktop\Desktop\data\Master\KBTU\Machine learning\Project work\SGD-section\notMNIST.py:50,</span> in <span class="ni">load_notmnist</span><span class="nt">(path, letters, img_shape, test_size, one_hot)</span>
+<span class="g g-Whitespace">     </span><span class="mi">48</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="g g-Whitespace">     </span><span class="mi">49</span>     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Downloading data...&quot;</span><span class="p">)</span>
+<span class="ne">---&gt; </span><span class="mi">50</span>     <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;curl http://yaroslavvb.com/upload/notMNIST/notMNIST_small.tar.gz &gt; notMNIST_small.tar.gz&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>  <span class="c1"># noqa</span>
+<span class="g g-Whitespace">     </span><span class="mi">51</span>     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Extracting ...&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">52</span>     <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span>
+<span class="g g-Whitespace">     </span><span class="mi">53</span>         <span class="s1">&#39;tar -zxvf notMNIST_small.tar.gz &gt; untar_notmnist.log&#39;</span>
+<span class="g g-Whitespace">     </span><span class="mi">54</span>     <span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+
+<span class="ne">KeyboardInterrupt</span>: 
+</pre></div>
+</div>
+</div>
+</div>
+<section id="visualize-data-results">
+<h3>Visualize data results<a class="headerlink" href="#visualize-data-results" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_letters</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">912</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/a6fdb8d2afe440e4775de1ea2859d57316cfd57395d2a6c60c38d1384036ee01.png" src="_images/a6fdb8d2afe440e4775de1ea2859d57316cfd57395d2a6c60c38d1384036ee01.png" />
+</div>
+</div>
+</section>
+<section id="visualize-performance">
+<h3>Visualize performance<a class="headerlink" href="#visualize-performance" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_confusion_matrix</span><span class="p">(</span>
+    <span class="n">y_test</span><span class="o">=</span><span class="n">y_test</span><span class="p">,</span>
+    <span class="n">y_test_pred</span><span class="o">=</span><span class="n">y_test_pred</span><span class="p">,</span>
+    <span class="n">model_name</span><span class="o">=</span><span class="s2">&quot;Stochastic Gradient Descent&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/2c96b9ac3f7f682da1efa09f89f41656b1f5fdb26975fcfdd6aae2575fb71e0b.png" src="_images/2c96b9ac3f7f682da1efa09f89f41656b1f5fdb26975fcfdd6aae2575fb71e0b.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="optimizers-of-gradient-algorithms">
+<h2>Optimizers of Gradient Algorithms<a class="headerlink" href="#optimizers-of-gradient-algorithms" title="Permalink to this heading">#</a></h2>
+<p>The main disadvantage of gradient algorithms is getting stuck in local optima (minimum).</p>
+<figure class="align-center">
+<img alt="https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Extrema_example_original.svg/1200px-Extrema_example_original.svg.png" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Extrema_example_original.svg/1200px-Extrema_example_original.svg.png" />
+</figure>
+<p>Moreover, at <strong>such points, the derivative is zero</strong>, which means that the further change of weights according to the formula <a class="reference internal" href="sgd.html#equation-sgd-formula">(2)</a> ( <span class="math notranslate nohighlight">\(\nabla Q(w^{(t)}) = \nabla L_k(w^t, x_k)\)</span> = 0 ) will not happen (we will stuck). <br></p>
+<p>In addition, stochastic gradient algorithms can form <strong>strong fluctuations</strong> when moving to the minimum point of the function</p>
+<figure class="align-center">
+<img alt="_images/sgd-fluctuations.png" src="_images/sgd-fluctuations.png" />
+</figure>
+<p>For solving above problems there were dedicated several solutions. See below</p>
+<section id="momentum-gradient-descent">
+<h3>Momentum Gradient Descent<a class="headerlink" href="#momentum-gradient-descent" title="Permalink to this heading">#</a></h3>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/momentum-meme1.png"><img alt="_images/momentum-meme1.png" src="_images/momentum-meme1.png" style="width: 400px;" /></a>
+</figure>
+<p>It was proposed to average the gradient in steps using an exponential moving average i.e. using the formula:</p>
+<div class="math notranslate nohighlight" id="equation-momentum-formula">
+<span class="eqno">(8)<a class="headerlink" href="#equation-momentum-formula" title="Permalink to this equation">#</a></span>\[v = \gamma v + (1-\gamma)\eta_t \cdot \nabla Q(w^{(t)})\]</div>
+<p>where, <span class="math notranslate nohighlight">\(v\)</span> - exponential moving average i.e some variable that accumulates the average of the gradients <br>
+<span class="math notranslate nohighlight">\(\;\;\;\;\;\;\;\;\;\gamma\)</span> - exponential moving average’s parameter (using it, you can adjust how many past gradients we will take into account in the value of <strong><span class="math notranslate nohighlight">\(v\)</span></strong>)</p>
+<p><span class="math notranslate nohighlight">\(\;\;\;\;\;\;\;\;\;\nabla Q(w^{(t)})\)</span> - gradient</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>if rewrite the <span class="math notranslate nohighlight">\((1-\gamma)\eta_t\)</span> from the formula {eq}’momentum-formula’ to <span class="math notranslate nohighlight">\(\eta_t = (1-\gamma)\cdot\eta_t\)</span> we obtain the algorithm:
+<span class="math notranslate nohighlight">\(v = \gamma v + \eta_t \cdot \nabla Q(w^{(t)})\)</span></p>
+</div>
+<p>Finally, just change the weight using the familiar principle:</p>
+<div class="math notranslate nohighlight" id="equation-weight-momentum-formula">
+<span class="eqno">(9)<a class="headerlink" href="#equation-weight-momentum-formula" title="Permalink to this equation">#</a></span>\[w^{(t+1)} = w^{(t)} - v\]</div>
+<p>where, <span class="math notranslate nohighlight">\(v\)</span> - smoothed gradients</p>
+<div class="note dropdown admonition">
+<p class="admonition-title">How does the <span class="math notranslate nohighlight">\(\gamma\)</span> influences the number of last gradients averaged?</p>
+<p>The expression shows how the number of last gradients are considered in for <span class="math notranslate nohighlight">\(v\)</span> calcucation
+<span class="math notranslate nohighlight">\(N \approx \frac 2 {(1-\gamma)} + 1\)</span></p>
+<p>It is an approximate formula because the in exponential moving average all the gradients are averaged that were met.</p>
+</div>
+</section>
+<section id="nag-nesterov-s-accelerated-gradient">
+<h3>NAG - Nesterov’s accelerated gradient<a class="headerlink" href="#nag-nesterov-s-accelerated-gradient" title="Permalink to this heading">#</a></h3>
+<p>Taking into account the already mentioned formula in momentum for <strong>exponential moving average</strong>:
+$<span class="math notranslate nohighlight">\(v = \gamma v + \eta_t \cdot \nabla Q(w^{(t)})\)</span>$</p>
+<p>where, <span class="math notranslate nohighlight">\(\eta_t = (1-\gamma)\cdot\eta_t\)</span> for simplicity</p>
+<p>Now, we can represent the “<span class="math notranslate nohighlight">\(v\)</span>” as the sum of the vectors <strong>“<span class="math notranslate nohighlight">\(\gamma v\)</span>”</strong> and <strong>“<span class="math notranslate nohighlight">\(\eta_t \cdot \nabla Q(w^{(t)})\)</span>”</strong>.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/sgd-momentum1.png"><img alt="_images/sgd-momentum1.png" src="_images/sgd-momentum1.png" style="width: 500px;" /></a>
+</figure>
+<p>But at the time of calculating the gradient, we already know that we will shift by the value of “<span class="math notranslate nohighlight">\(\gamma v\)</span>”. Therefore, it would be more correct to calculate the gradient not at point <span class="math notranslate nohighlight">\(w^{(t)}\)</span>, but at point (<span class="math notranslate nohighlight">\(w^{(t)} - \gamma v\)</span>) or:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/sgd-nesterov1.png"><img alt="_images/sgd-nesterov1.png" src="_images/sgd-nesterov1.png" style="width: 500px;" /></a>
+</figure>
+<p>Mathematically, it is shown as:</p>
+<div class="math notranslate nohighlight" id="equation-sgd-nesterov-formula">
+<span class="eqno">(10)<a class="headerlink" href="#equation-sgd-nesterov-formula" title="Permalink to this equation">#</a></span>\[v = \gamma v + \eta_t \cdot \nabla Q(w^{(t)}-\gamma v)\]</div>
+<p>And such an approach, as a rule, shows the best convergence to the optimum point.</p>
+<section id="common-sgd-vs-with-momentum-vs-with-nesterov-momentum">
+<h4>Common SGD VS with Momentum VS with Nesterov Momentum<a class="headerlink" href="#common-sgd-vs-with-momentum-vs-with-nesterov-momentum" title="Permalink to this heading">#</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="n">optimizers</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.1</span><span class="p">),</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.96</span><span class="p">),</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.96</span><span class="p">,</span> <span class="n">nesterov</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">optimizer_names</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;Gradient Descent&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Gradient Descent with Momentum&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Gradient Descent with Nesterov Momentum&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">tf</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">opt</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">optimizers</span><span class="p">):</span>
+    <span class="n">tfx</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="o">-</span><span class="mf">4.87</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">):</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">f</span><span class="p">(</span><span class="n">tfx</span><span class="p">),</span> <span class="n">var_list</span><span class="o">=</span><span class="p">[</span><span class="n">tfx</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Algorithm: &quot;</span><span class="p">,</span> <span class="n">optimizer_names</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s2">&quot;, Minimum value: (&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tfx</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="mi">3</span><span class="p">),</span> <span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">tfx</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="mi">3</span><span class="p">),</span> <span class="s2">&quot;)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Algorithm:  Gradient Descent , Minimum value: ( -2.289 , -3.945 )
+Algorithm:  Gradient Descent with Momentum , Minimum value: ( 5.087 , -24.083 )
+Algorithm:  Gradient Descent with Nesterov Momentum , Minimum value: ( 5.087 , -24.083 )
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="sgd.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Stochastic Gradient Descent (SGD)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="math/calculus.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Calculus</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Stochastic Gradient Descent (SGD)</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-descent-gd-review">Gradient Descent (GD) review</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Stochastic Gradient Descent (SGD)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gd-algorithm-problem">GD algorithm problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sgd-derivation">SGD derivation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sgd-realization-pseudocode">SGD Realization Pseudocode</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#heuristics">Heuristics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#initialization-of-weights-w">Initialization of weights <span class="math notranslate nohighlight">\(w\)</span></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-learning-rate">Dynamic Learning Rate</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sample-object-choice">Sample object choice</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advantages-and-disadvantages">Advantages and Disadvantages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sgd-with-notmnist">SGD with notMNIST</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#visualize-data-results">Visualize data results</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#visualize-performance">Visualize performance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimizers-of-gradient-algorithms">Optimizers of Gradient Algorithms</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#momentum-gradient-descent">Momentum Gradient Descent</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nag-nesterov-s-accelerated-gradient">NAG - Nesterov’s accelerated gradient</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#common-sgd-vs-with-momentum-vs-with-nesterov-momentum">Common SGD VS with Momentum VS with Nesterov Momentum</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
