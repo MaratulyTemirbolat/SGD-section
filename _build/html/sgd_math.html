@@ -589,46 +589,14 @@ if the value is <strong>positive</strong>, then the prediction if <strong>correc
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Downloading data...
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Parsing...
 </pre></div>
 </div>
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">4</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">ndarray</span>
-<span class="ne">----&gt; </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">notMNIST</span> <span class="kn">import</span> <span class="p">(</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span>     <span class="n">plot_letters</span><span class="p">,</span>
-<span class="g g-Whitespace">      </span><span class="mi">6</span>     <span class="n">plot_confusion_matrix</span><span class="p">,</span>
-<span class="g g-Whitespace">      </span><span class="mi">7</span>     <span class="n">X_test</span><span class="p">,</span>
-<span class="g g-Whitespace">      </span><span class="mi">8</span>     <span class="n">y_test</span><span class="p">,</span>
-<span class="g g-Whitespace">      </span><span class="mi">9</span>     <span class="n">X_train</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">10</span>     <span class="n">y_train</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">11</span> <span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">14</span> <span class="n">clf</span><span class="p">:</span> <span class="n">SGDClassifier</span> <span class="o">=</span> <span class="n">SGDClassifier</span><span class="p">(</span>
-<span class="g g-Whitespace">     </span><span class="mi">15</span>     <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;l2&quot;</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">16</span>     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">20</span>     <span class="n">max_iter</span><span class="o">=</span><span class="mi">3000</span>
-<span class="g g-Whitespace">     </span><span class="mi">21</span> <span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">22</span> <span class="n">model</span><span class="p">:</span> <span class="n">SGDClassifier</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_train</span><span class="p">)</span>
-
-<span class="n">File</span> <span class="o">~</span>\<span class="n">Desktop</span>\<span class="n">Desktop</span>\<span class="n">data</span>\<span class="n">Master</span>\<span class="n">KBTU</span>\<span class="n">Machine</span> <span class="n">learning</span>\<span class="n">Project</span> <span class="n">work</span>\<span class="n">SGD</span><span class="o">-</span><span class="n">section</span>\<span class="n">notMNIST</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">92</span>
-<span class="g g-Whitespace">     </span><span class="mi">88</span>     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">89</span>     <span class="k">return</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span>
-<span class="ne">---&gt; </span><span class="mi">92</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">load_notmnist</span><span class="p">(</span><span class="n">letters</span><span class="o">=</span><span class="s1">&#39;ABCDEFGHIJ&#39;</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">93</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">]),</span> <span class="n">X_test</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">])</span>
-
-<span class="nn">File ~\Desktop\Desktop\data\Master\KBTU\Machine learning\Project work\SGD-section\notMNIST.py:50,</span> in <span class="ni">load_notmnist</span><span class="nt">(path, letters, img_shape, test_size, one_hot)</span>
-<span class="g g-Whitespace">     </span><span class="mi">48</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-<span class="g g-Whitespace">     </span><span class="mi">49</span>     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Downloading data...&quot;</span><span class="p">)</span>
-<span class="ne">---&gt; </span><span class="mi">50</span>     <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;curl http://yaroslavvb.com/upload/notMNIST/notMNIST_small.tar.gz &gt; notMNIST_small.tar.gz&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>  <span class="c1"># noqa</span>
-<span class="g g-Whitespace">     </span><span class="mi">51</span>     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Extracting ...&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">52</span>     <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span>
-<span class="g g-Whitespace">     </span><span class="mi">53</span>         <span class="s1">&#39;tar -zxvf notMNIST_small.tar.gz &gt; untar_notmnist.log&#39;</span>
-<span class="g g-Whitespace">     </span><span class="mi">54</span>     <span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
-
-<span class="ne">KeyboardInterrupt</span>: 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Done
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>SGD accuracy train: 99.62%
+SGD accuracy test: 95.21%
 </pre></div>
 </div>
 </div>
@@ -642,7 +610,7 @@ if the value is <strong>positive</strong>, then the prediction if <strong>correc
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/a6fdb8d2afe440e4775de1ea2859d57316cfd57395d2a6c60c38d1384036ee01.png" src="_images/a6fdb8d2afe440e4775de1ea2859d57316cfd57395d2a6c60c38d1384036ee01.png" />
+<img alt="_images/2af1429c9915655936bea843edff3c116fc1386ca81123656864f0fe27f34c9b.png" src="_images/2af1429c9915655936bea843edff3c116fc1386ca81123656864f0fe27f34c9b.png" />
 </div>
 </div>
 </section>
@@ -659,7 +627,7 @@ if the value is <strong>positive</strong>, then the prediction if <strong>correc
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/2c96b9ac3f7f682da1efa09f89f41656b1f5fdb26975fcfdd6aae2575fb71e0b.png" src="_images/2c96b9ac3f7f682da1efa09f89f41656b1f5fdb26975fcfdd6aae2575fb71e0b.png" />
+<img alt="_images/581655ac88b9fae7364564b3117438e0ec805341188b1c476b2a2ac15789bdda.png" src="_images/581655ac88b9fae7364564b3117438e0ec805341188b1c476b2a2ac15789bdda.png" />
 </div>
 </div>
 </section>
@@ -754,9 +722,16 @@ $<span class="math notranslate nohighlight">\(v = \gamma v + \eta_t \cdot \nabla
 </div>
 </div>
 <div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING:tensorflow:From C:\Users\temir\AppData\Local\Programs\Python\Python311\Lib\site-packages\keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Algorithm:  Gradient Descent , Minimum value: ( -2.289 , -3.945 )
-Algorithm:  Gradient Descent with Momentum , Minimum value: ( 5.087 , -24.083 )
-Algorithm:  Gradient Descent with Nesterov Momentum , Minimum value: ( 5.087 , -24.083 )
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Algorithm:  Gradient Descent with Momentum , Minimum value: ( 5.087 , -24.083 )
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Algorithm:  Gradient Descent with Nesterov Momentum , Minimum value: ( 5.087 , -24.083 )
 </pre></div>
 </div>
 </div>

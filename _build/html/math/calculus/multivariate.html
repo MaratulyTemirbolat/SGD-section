@@ -172,16 +172,6 @@ const thebe_selector_output = ".output, .cell_output"
             </li>
         </ul>
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Math for ML</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../euler.html">Число Эйлера</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../sgd.html">Stochastic Gradient Descent (SGD)</a></li>
-
-
-<li class="toctree-l1"><a class="reference internal" href="../../sgd_math.html">Stochastic Gradient Descent (SGD)</a></li>
-
-
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Math for ML</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../calculus.html">Calculus</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="1-d.html">1-d calculus</a></li>
@@ -443,7 +433,7 @@ f(x+h) - f(x) \approx Df(x)[h].
 <h3>Functions of vectors<a class="headerlink" href="#functions-of-vectors" title="Permalink to this heading">#</a></h3>
 <p>Пусть <span class="math notranslate nohighlight">\(f\colon \mathbb R^n \to \mathbb R\)</span> — скалярная функция векторного аргумента <span class="math notranslate nohighlight">\(\boldsymbol x = (x_1, \ldots, x_n)^\top\)</span> (под вектором по умолчанию понимается вектор-столбец). Тогда</p>
 <div class="math notranslate nohighlight" id="equation-vector-func-diff">
-<span class="eqno">(11)<a class="headerlink" href="#equation-vector-func-diff" title="Permalink to this equation">#</a></span>\[	Df(\boldsymbol x)[\boldsymbol h] = \sum\limits_{i=1}^n
+<span class="eqno">(1)<a class="headerlink" href="#equation-vector-func-diff" title="Permalink to this equation">#</a></span>\[	Df(\boldsymbol x)[\boldsymbol h] = \sum\limits_{i=1}^n
 	\frac{\partial f(\boldsymbol x)}        {\partial 	 x_i} h_i = 
 	\langle \nabla f(\boldsymbol x), \boldsymbol h\rangle = 
 	\nabla     f       (\boldsymbol x)^\top 		\boldsymbol h,\]</div>
@@ -487,9 +477,9 @@ f(x+h) - f(x) \approx Df(x)[h].
 </section>
 <section id="functions-of-matrices">
 <h3>Functions of matrices<a class="headerlink" href="#functions-of-matrices" title="Permalink to this heading">#</a></h3>
-<p>Пусть <span class="math notranslate nohighlight">\(f\colon \mathbb R^{m\times n} \to \mathbb R\)</span> — скалярная функция матричного аргумента <span class="math notranslate nohighlight">\(\boldsymbol X\)</span>. Такую функцию можно представлять себе как функцию от вектора из <span class="math notranslate nohighlight">\(\mathbb R^{mn}\)</span> в <span class="math notranslate nohighlight">\(\mathbb R\)</span> и дифференцировать аналогично <a class="reference internal" href="#equation-vector-func-diff">(11)</a>:</p>
+<p>Пусть <span class="math notranslate nohighlight">\(f\colon \mathbb R^{m\times n} \to \mathbb R\)</span> — скалярная функция матричного аргумента <span class="math notranslate nohighlight">\(\boldsymbol X\)</span>. Такую функцию можно представлять себе как функцию от вектора из <span class="math notranslate nohighlight">\(\mathbb R^{mn}\)</span> в <span class="math notranslate nohighlight">\(\mathbb R\)</span> и дифференцировать аналогично <a class="reference internal" href="#equation-vector-func-diff">(1)</a>:</p>
 <div class="math notranslate nohighlight" id="equation-matrix-func-diff">
-<span class="eqno">(12)<a class="headerlink" href="#equation-matrix-func-diff" title="Permalink to this equation">#</a></span>\[	Df(\boldsymbol X)[\boldsymbol H] = \sum\limits_{i=1}^m \sum\limits_{j=1}^n \frac{\partial f (\boldsymbol X)}{\partial X_{ij}} H_{ij} = \mathrm{tr}(\nabla f(\boldsymbol X)^\top \boldsymbol H).\]</div>
+<span class="eqno">(2)<a class="headerlink" href="#equation-matrix-func-diff" title="Permalink to this equation">#</a></span>\[	Df(\boldsymbol X)[\boldsymbol H] = \sum\limits_{i=1}^m \sum\limits_{j=1}^n \frac{\partial f (\boldsymbol X)}{\partial X_{ij}} H_{ij} = \mathrm{tr}(\nabla f(\boldsymbol X)^\top \boldsymbol H).\]</div>
 <p>Здесь мы упаковали градиент функции <span class="math notranslate nohighlight">\(f\)</span> в матрице того же размера, что и матрица <span class="math notranslate nohighlight">\(\boldsymbol X\)</span>, а также воспользовались равенством</p>
 <div class="math notranslate nohighlight">
 \[
@@ -508,7 +498,7 @@ f(x+h) - f(x) \approx Df(x)[h].
 </section>
 <section id="gradients-shape">
 <h3>Gradients shape<a class="headerlink" href="#gradients-shape" title="Permalink to this heading">#</a></h3>
-<p>В <a class="reference internal" href="#equation-vector-func-diff">(11)</a> и <a class="reference internal" href="#equation-matrix-func-diff">(12)</a> пришлось столкнуться с давним знакомым из матанализа: градиентом <span class="math notranslate nohighlight">\(\nabla f\)</span> скалярной функции <span class="math notranslate nohighlight">\(f\)</span>, который состоит из частных производных этой функции по всем координатам её аргумента <span class="math notranslate nohighlight">\(x\)</span>. При этом его обычно упаковывают в ту же форму, что и сам аргумент: если <span class="math notranslate nohighlight">\(x\)</span> — вектор-строка, то и градиент записывается вектор-строкой, а если <span class="math notranslate nohighlight">\(x\)</span> — матрица, то и градиент тоже будет матрицей того же размера. Это важно, например, для алгоритма градиентного спуска, при осуществлении которого мы должны уметь прибавлять градиент к точке, в которой он посчитан.</p>
+<p>В <a class="reference internal" href="#equation-vector-func-diff">(1)</a> и <a class="reference internal" href="#equation-matrix-func-diff">(2)</a> пришлось столкнуться с давним знакомым из матанализа: градиентом <span class="math notranslate nohighlight">\(\nabla f\)</span> скалярной функции <span class="math notranslate nohighlight">\(f\)</span>, который состоит из частных производных этой функции по всем координатам её аргумента <span class="math notranslate nohighlight">\(x\)</span>. При этом его обычно упаковывают в ту же форму, что и сам аргумент: если <span class="math notranslate nohighlight">\(x\)</span> — вектор-строка, то и градиент записывается вектор-строкой, а если <span class="math notranslate nohighlight">\(x\)</span> — матрица, то и градиент тоже будет матрицей того же размера. Это важно, например, для алгоритма градиентного спуска, при осуществлении которого мы должны уметь прибавлять градиент к точке, в которой он посчитан.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Иногда приходится дифференцировать функции, зависящие от различных наборов аргументов, и тогда во избежание неоднозачности в индексе у буквы <span class="math notranslate nohighlight">\(\nabla\)</span> указывают аргумент, по которому осуществляется дифференцирование. Например, запись <span class="math notranslate nohighlight">\(\nabla_{\boldsymbol w} f(\boldsymbol X, \boldsymbol y, \boldsymbol w)\)</span> недвусмысленно даёт понять, что мы дифференцируем фукнцию <span class="math notranslate nohighlight">\(f\)</span> по вектору <span class="math notranslate nohighlight">\(\boldsymbol w\)</span>, а <span class="math notranslate nohighlight">\(\boldsymbol X\)</span> и <span class="math notranslate nohighlight">\(\boldsymbol y\)</span> рассматриваем при этом как фиксированные параметры.</p>
@@ -522,7 +512,7 @@ f(x+h) - f(x) \approx Df(x)[h].
 <h3>Applying a function elementwise<a class="headerlink" href="#applying-a-function-elementwise" title="Permalink to this heading">#</a></h3>
 <p>Пусть</p>
 <div class="math notranslate nohighlight" id="equation-elementwise-func">
-<span class="eqno">(13)<a class="headerlink" href="#equation-elementwise-func" title="Permalink to this equation">#</a></span>\[\begin{split}f \colon \mathbb R^m \to \mathbb R^m,\quad  
+<span class="eqno">(3)<a class="headerlink" href="#equation-elementwise-func" title="Permalink to this equation">#</a></span>\[\begin{split}f \colon \mathbb R^m \to \mathbb R^m,\quad  
 f(\boldsymbol x) = \begin{pmatrix} 
 \varphi(x_1)\\ \vdots\\ \varphi(x_m) 
 \end{pmatrix},\end{split}\]</div>
@@ -573,7 +563,7 @@ f(\boldsymbol X + \boldsymbol H) - f(\boldsymbol X) = (\boldsymbol X + \boldsymb
 <h3>Vector-to-vector functions<a class="headerlink" href="#vector-to-vector-functions" title="Permalink to this heading">#</a></h3>
 <p>Пусть <span class="math notranslate nohighlight">\(f\colon \mathbb R^m \to \mathbb R^n\)</span>, тогда дифференциал должен быть линейным оператором из <span class="math notranslate nohighlight">\(\mathbb R^m\)</span> в <span class="math notranslate nohighlight">\(\mathbb R^n\)</span>, то есть матрицей размера <span class="math notranslate nohighlight">\(n\times m\)</span>. И, действительно, с помощью <strong>матрицы Якоби</strong></p>
 <div class="math notranslate nohighlight" id="equation-jacobi">
-<span class="eqno">(14)<a class="headerlink" href="#equation-jacobi" title="Permalink to this equation">#</a></span>\[\begin{split}\boldsymbol J_f = \frac{\partial f}{\partial \boldsymbol x} = 
+<span class="eqno">(4)<a class="headerlink" href="#equation-jacobi" title="Permalink to this equation">#</a></span>\[\begin{split}\boldsymbol J_f = \frac{\partial f}{\partial \boldsymbol x} = 
 		    \begin{pmatrix} 
 	    	        \frac{\partial f_1}{\partial x_1} &amp; \ldots &amp; 
 	        	    \frac{\partial f_1}{\partial x_m} \\
@@ -584,7 +574,7 @@ f(\boldsymbol X + \boldsymbol H) - f(\boldsymbol X) = (\boldsymbol X + \boldsymb
 <p>дифференциал записывается как <span class="math notranslate nohighlight">\(Df(\boldsymbol x)[\boldsymbol h] = \boldsymbol J_f(\boldsymbol x)\boldsymbol h\)</span>, или <span class="math notranslate nohighlight">\(df(\boldsymbol x) = \boldsymbol J_f(\boldsymbol x) d\boldsymbol x\)</span>.</p>
 <div class="important admonition">
 <p class="admonition-title">Exercise</p>
-<p>According to <a class="reference internal" href="#equation-jacobi">(14)</a>, the differential of the function <a class="reference internal" href="#equation-elementwise-func">(13)</a> should be a <span class="math notranslate nohighlight">\(m\times m\)</span> matrix. How does it look like?</p>
+<p>According to <a class="reference internal" href="#equation-jacobi">(4)</a>, the differential of the function <a class="reference internal" href="#equation-elementwise-func">(3)</a> should be a <span class="math notranslate nohighlight">\(m\times m\)</span> matrix. How does it look like?</p>
 </div>
 <p><strong>Вопрос на подумать</strong>. Как записать в векторно-матричной форме дифференциал функции <span class="math notranslate nohighlight">\(f\colon \mathbb R^m \to \mathbb R^n\)</span>, отображающей вектор-строку <span class="math notranslate nohighlight">\(\boldsymbol x = (x_1, \ldots, x_m)\)</span> в вектор-строку <span class="math notranslate nohighlight">\((f_1(\boldsymbol x), \ldots, f_n(\boldsymbol x))\)</span>?</p>
 <details>

@@ -6,11 +6,6 @@ root: intro
 parts:
   - caption: Math for ML
     chapters:
-    - file: euler
-    - file: sgd
-    - file: sgd_math
-  - caption: Math for ML
-    chapters:
       - file: math/calculus
         sections:
           - file: math/calculus/1-d
@@ -25,7 +20,3 @@ parts:
           - file: math/optimization/GD.ipynb
           - file: math/optimization/SGD.ipynb
           - file: math/optimization/newton.ipynb
-
-# - file: markdown
-# - file: notebooks
-# - file: markdown-notebooks
