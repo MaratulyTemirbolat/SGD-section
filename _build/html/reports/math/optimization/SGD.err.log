@@ -1,194 +1,44 @@
 Traceback (most recent call last):
-  File "/Users/macbook/anaconda3/lib/python3.11/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+  File "C:\Users\temir\AppData\Local\Programs\Python\Python311\Lib\site-packages\nbclient\client.py", line 778, in _async_poll_for_reply
+    msg = await ensure_async(self.kc.shell_channel.get_msg(timeout=new_timeout))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\temir\AppData\Local\Programs\Python\Python311\Lib\site-packages\jupyter_core\utils\__init__.py", line 189, in ensure_async
+    result = await obj
+             ^^^^^^^^^
+  File "C:\Users\temir\AppData\Local\Programs\Python\Python311\Lib\site-packages\jupyter_client\channels.py", line 315, in get_msg
+    raise Empty
+_queue.Empty
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\temir\AppData\Local\Programs\Python\Python311\Lib\site-packages\jupyter_cache\executors\utils.py", line 58, in single_nb_execution
     executenb(
-  File "/Users/macbook/anaconda3/lib/python3.11/site-packages/nbclient/client.py", line 1204, in execute
+  File "C:\Users\temir\AppData\Local\Programs\Python\Python311\Lib\site-packages\nbclient\client.py", line 1305, in execute
     return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/macbook/anaconda3/lib/python3.11/site-packages/nbclient/util.py", line 84, in wrapped
-    return just_run(coro(*args, **kwargs))
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/macbook/anaconda3/lib/python3.11/site-packages/nbclient/util.py", line 62, in just_run
-    return loop.run_until_complete(coro)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/macbook/anaconda3/lib/python3.11/asyncio/base_events.py", line 653, in run_until_complete
+  File "C:\Users\temir\AppData\Local\Programs\Python\Python311\Lib\site-packages\jupyter_core\utils\__init__.py", line 173, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\temir\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 653, in run_until_complete
     return future.result()
            ^^^^^^^^^^^^^^^
-  File "/Users/macbook/anaconda3/lib/python3.11/site-packages/nbclient/client.py", line 663, in async_execute
+  File "C:\Users\temir\AppData\Local\Programs\Python\Python311\Lib\site-packages\nbclient\client.py", line 705, in async_execute
     await self.async_execute_cell(
-  File "/Users/macbook/anaconda3/lib/python3.11/site-packages/nbclient/client.py", line 965, in async_execute_cell
-    await self._check_raise_for_error(cell, cell_index, exec_reply)
-  File "/Users/macbook/anaconda3/lib/python3.11/site-packages/nbclient/client.py", line 862, in _check_raise_for_error
-    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
-nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
-------------------
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-import matplotlib.pyplot as plt
-import torch
-from torch.utils.data import Dataset
-from torch.utils.data import DataLoader
-torch.manual_seed(42)
-
-# Creating a function f(X) with a slope of -5
-X = torch.arange(-5, 5, 0.1).view(-1, 1)
-func = -5 * X
-# Adding Gaussian noise to the function f(X) and saving it in Y
-Y = func + 0.4 * torch.randn(X.size())
-
-w = torch.tensor(-10.0, requires_grad=True)
-b = torch.tensor(-20.0, requires_grad=True)
-
-# defining the function for forward pass for prediction
-def forward(x):
-    return w * x + b
-
-# evaluating data points with Mean Square Error (MSE)
-def criterion(y_pred, y):
-    return torch.mean((y_pred - y) ** 2)
-
-# Creating our dataset class
-class Build_Data(Dataset):
-    # Constructor
-    def __init__(self):
-        self.x = torch.arange(-5, 5, 0.1).view(-1, 1)
-        self.y = -5 * X
-        self.len = self.x.shape[0]
-    # Getting the data
-    def __getitem__(self, index):
-        return self.x[index], self.y[index]
-    # Getting length of the data
-    def __len__(self):
-        return self.len
-
-# Creating DataLoader object
-dataset = Build_Data()
-train_loader = DataLoader(dataset=dataset, batch_size=1)
-
-step_size = 0.1
-loss_SGD = []
-n_iter = 20
-
-for i in range(n_iter):
-    # calculating loss as in the beginning of an epoch and storing it
-    y_pred = forward(X)
-    loss_SGD.append(criterion(y_pred, Y).tolist())
-    for x, y in train_loader:
-        # making a prediction in forward pass
-        y_hat = forward(x)
-        # calculating the loss between original and predicted data points
-        loss = criterion(y_hat, y)
-        # backward pass for computing the gradients of the loss w.r.t to learnable parameters
-        loss.backward()
-        # updating the parameters after each iteration
-        w.data = w.data - step_size * w.grad.data
-        b.data = b.data - step_size * b.grad.data
-        # zeroing gradients after each iteration
-        w.grad.data.zero_()
-        b.grad.data.zero_()
-
-train_loader_10 = DataLoader(dataset=dataset, batch_size=10)
-
-# Reset w and b
-w = torch.tensor(-10.0, requires_grad=True)
-b = torch.tensor(-20.0, requires_grad=True)
-
-loss_MBGD_10 = []
-
-for i in range(n_iter):
-    # calculating loss as in the beginning of an epoch and storing it
-    y_pred = forward(X)
-    loss_MBGD_10.append(criterion(y_pred, Y).tolist())
-    for x, y in train_loader_10:
-        # making a prediction in forward pass
-        y_hat = forward(x)
-        # calculating the loss between original and predicted data points
-        loss = criterion(y_hat, y)
-        # backward pass for computing the gradients of the loss w.r.t to learnable parameters
-        loss.backward()
-        # updating the parameters after each iteration
-        w.data = w.data - step_size * w.grad.data
-        b.data = b.data - step_size * b.grad.data
-        # zeroing gradients after each iteration
-        w.grad.data.zero_()
-        b.grad.data.zero_()
-
-train_loader_20 = DataLoader(dataset=dataset, batch_size=20)
-
-# Reset w and b
-w = torch.tensor(-10.0, requires_grad=True)
-b = torch.tensor(-20.0, requires_grad=True)
-
-loss_MBGD_20 = []
-
-for i in range(n_iter):
-    # calculating loss as in the beginning of an epoch and storing it
-    y_pred = forward(X)
-    loss_MBGD_20.append(criterion(y_pred, Y).tolist())
-    for x, y in train_loader_20:
-        # making a prediction in forward pass
-        y_hat = forward(x)
-        # calculating the loss between original and predicted data points
-        loss = criterion(y_hat, y)
-        # backward pass for computing the gradients of the loss w.r.t to learnable parameters
-        loss.backward()
-        # updating the parameters after each iteration
-        w.data = w.data - step_size * w.grad.data
-        b.data = b.data - step_size * b.grad.data
-        # zeroing gradients after each iteration
-        w.grad.data.zero_()
-        b.grad.data.zero_()
-
-
-fig = make_subplots(rows=1, cols=1)
-
-# Add traces for each line
-fig.add_trace(go.Scatter(x=[], y=[], mode='lines', name='SGD', line=dict(width=2)))
-fig.add_trace(go.Scatter(x=[], y=[], mode='lines', name='Mini Batch 10 GD', line=dict(width=2)))
-fig.add_trace(go.Scatter(x=[], y=[], mode='lines', name='Mini Batch 20 GD', line=dict(width=2)))
-
-# Update layout
-fig.update_layout(
-    xaxis_title='Epoch',
-    yaxis_title='L(w) value',
-    title_text='Mini Batch GD VS SGD',
-    showlegend=True,
-    updatemenus=[{
-        'type': 'buttons',
-        'showactive': False,
-        'buttons': [{
-            'label': 'Play',
-            'method': 'animate',
-            'args': [None, {
-                'frame': {'duration': 500, 'redraw': True},
-                'fromcurrent': True
-            }]
-        }]
-    }]
-)
-fig.update_xaxes(range=[1, n_iter + 1])  
-fig.update_yaxes(range=[-200, max(max(loss_SGD), max(loss_MBGD_10), max(loss_MBGD_20)) + 200])
-# Define the animation frames
-frames = [go.Frame(
-    data=[go.Scatter(x=list(range(1, i+2)), y=loss_SGD[:i+1], mode='lines', name='SGD', line=dict(width=2)),
-          go.Scatter(x=list(range(1, i+2)), y=loss_MBGD_10[:i+1], mode='lines', name='Mini Batch 10 GD', line=dict(width=2)),
-          go.Scatter(x=list(range(1, i+2)), y=loss_MBGD_20[:i+1], mode='lines', name='Mini Batch 20 GD', line=dict(width=2))]
-) for i in range(n_iter)]
-
-fig.frames = frames
-
-# Show the figure
-fig.show()
-------------------
-
-[0;31m---------------------------------------------------------------------------[0m
-[0;31mModuleNotFoundError[0m                       Traceback (most recent call last)
-Cell [0;32mIn[4], line 4[0m
-[1;32m      2[0m [38;5;28;01mfrom[39;00m [38;5;21;01mplotly[39;00m[38;5;21;01m.[39;00m[38;5;21;01msubplots[39;00m [38;5;28;01mimport[39;00m make_subplots
-[1;32m      3[0m [38;5;28;01mimport[39;00m [38;5;21;01mmatplotlib[39;00m[38;5;21;01m.[39;00m[38;5;21;01mpyplot[39;00m [38;5;28;01mas[39;00m [38;5;21;01mplt[39;00m
-[0;32m----> 4[0m [38;5;28;01mimport[39;00m [38;5;21;01mtorch[39;00m
-[1;32m      5[0m [38;5;28;01mfrom[39;00m [38;5;21;01mtorch[39;00m[38;5;21;01m.[39;00m[38;5;21;01mutils[39;00m[38;5;21;01m.[39;00m[38;5;21;01mdata[39;00m [38;5;28;01mimport[39;00m Dataset
-[1;32m      6[0m [38;5;28;01mfrom[39;00m [38;5;21;01mtorch[39;00m[38;5;21;01m.[39;00m[38;5;21;01mutils[39;00m[38;5;21;01m.[39;00m[38;5;21;01mdata[39;00m [38;5;28;01mimport[39;00m DataLoader
-
-[0;31mModuleNotFoundError[0m: No module named 'torch'
-ModuleNotFoundError: No module named 'torch'
+  File "C:\Users\temir\AppData\Local\Programs\Python\Python311\Lib\site-packages\nbclient\client.py", line 1001, in async_execute_cell
+    exec_reply = await self.task_poll_for_reply
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\temir\AppData\Local\Programs\Python\Python311\Lib\site-packages\nbclient\client.py", line 802, in _async_poll_for_reply
+    error_on_timeout_execute_reply = await self._async_handle_timeout(timeout, cell)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\temir\AppData\Local\Programs\Python\Python311\Lib\site-packages\nbclient\client.py", line 852, in _async_handle_timeout
+    raise CellTimeoutError.error_from_timeout_and_cell(
+nbclient.exceptions.CellTimeoutError: A cell timed out while it was being executed, after 30 seconds.
+The message was: Cell execution timed out.
+Here is a preview of the cell contents:
+-------------------
+['import tensorflow as tf', 'import numpy as np', 'import matplotlib.pyplot as plt', 'from matplotlib.animation import FuncAnimation', '']
+...
+['ani = FuncAnimation(fig, update, frames=100, fargs=(lines_list, scatters_list, titles_list), interval=100, repeat=False)', '', '# Display the animation', 'from IPython.display import HTML', 'HTML(ani.to_jshtml())']
+-------------------
 
