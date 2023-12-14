@@ -19,6 +19,22 @@ latex:
 bibtex_bibfiles:
   - references.bib
 
+parse:
+  myst_enable_extensions:
+    # don't forget to list any other extensions you want enabled,
+    # including those that are enabled by default! See here: https://jupyterbook.org/en/stable/customize/config.html
+    # - amsmath
+    - colon_fence
+    # - deflist
+    - dollarmath
+    # - html_admonition
+    - html_image
+    - linkify
+    # - replacements
+    # - smartquotes
+    - substitution
+    - tasklist
+
 # Information about where the book exists on the web
 repository:
   url: https://github.com/executablebooks/jupyter-book  # Online location of your book
